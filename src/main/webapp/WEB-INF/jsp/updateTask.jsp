@@ -10,7 +10,7 @@
 <title>Task</title>
 </head>
 <body>
-
+<h2>Update Task Details</h2>
 <form action="updateTask" method="post">
  <input type="hidden" id="id" value="${ task.id }" name="taskId"><br>
  <input type="hidden" id="id" value="${ userId }" name="userId">
@@ -24,6 +24,8 @@
 <input type="date" name="edate" value="${fmteDate}"/><br><br>
   <label for="desc">Description:</label><br>
   <textarea id="desc" name="desc" ${ task.description } rows=10 cols=30>${ task.description }</textarea><br><br>
+   <label for="email">Email:</label><br>
+  <input type="text" id="email" value="${ task.email }" name="email"><br><br>
   <label for="sev">Severity</label><br>
   <select id="sev" name="sev">
   	<option value="high" ${task.severity == "high" ? 'selected="selected"' : ''}>High</option>

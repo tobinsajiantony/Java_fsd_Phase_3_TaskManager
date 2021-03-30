@@ -2,6 +2,8 @@ package com.example.TaskManager.controllers;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -18,44 +20,47 @@ import com.example.TaskManager.services.UserService;
 
 @Controller
 public class TaskController {
-	
+
 	@Autowired
 	TaskService taskService;
-	
+
 	@Autowired
 	UserService userService;
-	
-	
+
+
 	@GetMapping(value="/task")
-    public String showTaskPage(@RequestParam("userId") int userId, ModelMap model) {   
+	public String showTaskPage(@RequestParam("userId") int userId, ModelMap model) {   
 		model.addAttribute("userId", userId);
 		return "taskform";
 	}
-	
+
 	@GetMapping(value="/tasks")
-    public String showAllTasksPage(ModelMap model, int userId) {   
+	public String showAllTasksPage(ModelMap model, int userId) {  
 		Iterable<Task> tasks = taskService.GetTasksByUser(userService.getUserById(userId));
 		model.addAttribute("tasks", tasks);
 		model.addAttribute("userId", userId);
 		return "tasks";
 	}
-	
+
 	@RequestMapping(value = "/task")
-	public String addTask(@RequestParam("name") String name, @RequestParam("desc") String desc
+	public String addTask(@RequestParam("name") String name, @RequestParam("email") String email, @RequestParam("desc") String desc
 			, @RequestParam("sev") String sev,  @RequestParam("sdate") @DateTimeFormat(pattern="yyyy-MM-dd") Date sdate
 			, @RequestParam("edate") @DateTimeFormat(pattern="yyyy-MM-dd") Date edate, @RequestParam("userId") int userId
 			, ModelMap model) {
-		System.out.println(name);
-		System.out.println(sdate);
-		System.out.println(edate);
-		Task task = new Task(name, sdate, edate, sev, desc, "email", userService.getUserById(userId));
-		taskService.addTask(task);
-		Iterable<Task> tasks = taskService.GetTasksByUser(userService.getUserById(userId));
-		model.addAttribute("tasks", tasks);
-		model.addAttribute("userId", userId);
-		return "tasks";
+		if(name != "" && email!="" && desc != "" && sev != "" && sdate != null && edate != null) {
+			Task task = new Task(name, sdate, edate, sev, desc, email, userService.getUserById(userId));
+			taskService.addTask(task);
+			Iterable<Task> tasks = taskService.GetTasksByUser(userService.getUserById(userId));
+			model.addAttribute("tasks", tasks);
+			model.addAttribute("userId", userId);
+			return "tasks";
+		}
+		else {
+			model.addAttribute("message", "Please Add Required Fields");
+			return "error";
+		}
 	}
-	
+
 	@GetMapping(value = "/updateTask")
 	public String InitateUpdateTask(@RequestParam("taskId") int taskId, @RequestParam("userId") int userId, ModelMap model) {
 		Task task = taskService.getTaskById(taskId);
@@ -63,26 +68,26 @@ public class TaskController {
 		model.addAttribute("userId", userId);
 		return "updateTask";
 	}
-	
+
 	@RequestMapping(value = "/updateTask")
-	public String updateTask (@RequestParam("taskId") int taskId, @RequestParam("userId") int userId, @RequestParam("name") String name, @RequestParam("desc") String desc
+	public String updateTask (@RequestParam("taskId") int taskId, @RequestParam("userId") int userId, @RequestParam("name") String name, @RequestParam("email") String email, @RequestParam("desc") String desc
 			, @RequestParam("sev") String sev,  @RequestParam("sdate") @DateTimeFormat(pattern="yyyy-MM-dd") Date sdate
 			, @RequestParam("edate") @DateTimeFormat(pattern="yyyy-MM-dd") Date edate
 			, ModelMap model){
-		System.out.println(taskId);
-		System.out.println(userId);
-		System.out.println("next");
-		System.out.println(name);
-		System.out.println(sdate);
-		System.out.println(edate);
-		Task task = new Task( taskId, name, sdate, edate, sev, desc, "email", userService.getUserById(userId));
-		taskService.addTask(task);
-		Iterable<Task> tasks = taskService.GetTasksByUser(userService.getUserById(userId));
-		model.addAttribute("tasks", tasks);
-		model.addAttribute("userId", userId);
-		return "tasks";
+		if(name != "" && email!="" && desc != "" && sev != "" && sdate != null && edate != null) {
+			Task task = new Task( taskId, name, sdate, edate, sev, desc, email, userService.getUserById(userId));
+			taskService.addTask(task);
+			Iterable<Task> tasks = taskService.GetTasksByUser(userService.getUserById(userId));
+			model.addAttribute("tasks", tasks);
+			model.addAttribute("userId", userId);
+			return "tasks";
+		}
+		else {
+			model.addAttribute("message", "Please Add Required Fields");
+			return "error";
+		}
 	}
-	
+
 	@GetMapping(value = "/deleteTask")
 	public String DeleteTask(@RequestParam("taskId") int taskId, @RequestParam("userId") int userId, ModelMap model) {
 		taskService.deleteTask(taskId);
@@ -91,6 +96,6 @@ public class TaskController {
 		model.addAttribute("userId", userId);
 		return "tasks";
 	}
-	
+
 
 }

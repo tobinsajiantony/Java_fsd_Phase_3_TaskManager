@@ -11,6 +11,8 @@ table, th, td {
 </style>
 </head>
 <body>
+<h2>All Tasks</h2>
+<a href="/" style="float: right;">Logout</a>
 	<table>
 		<thead>
 			<tr>
@@ -19,6 +21,7 @@ table, th, td {
 				<td>End Date</td>
 				<td>Severity</td>
 				<td>Description</td>
+				<td>Email</td>
 				<td>Options</td>
 				<td>Options</td>
 			</tr>
@@ -31,6 +34,7 @@ table, th, td {
 					<td>${task.endDate}</td>
 					<td>${task.severity}</td>
 					<td>${task.description}</td>
+					<td>${task.email}</td>
 					<td>
 						<form action="updateTask" method="get">
 							<input type="hidden" name="taskId" value="${task.id}" /> <input
@@ -49,16 +53,10 @@ table, th, td {
 			</c:forEach>
 		</tbody>
 	</table>
-	${ userId }
 	<form action="task" method="get">
 		<input type="hidden" id="id" value="${ userId }" name="userId"><br>
 		<input type="submit" value="Add New Task" name="addTask">
 	</form>
-	<ul>
-		<li><p>
-				<b>First Name:</b> ${cookie.testCookie}
-			</p></li>
-	</ul>
 </body>
 </html>
 
